@@ -1,5 +1,5 @@
 const mongoose=require('mongoose')
-
+const bcrypt=require('bcrypt')
 
 
 const userSchema=new mongoose.Schema({
@@ -9,6 +9,13 @@ const userSchema=new mongoose.Schema({
     role:{type:String,enum:["admin","user"] ,default:"user"},
 })
 
+userSchema.pre("save", function(next){
+    const user = this;
+    user.password =  bcrypt.hashSync(user.password, 8);
+    next();
+})
+
 const User= mongoose.model('user',userSchema)
+
 
 module.exports=User
